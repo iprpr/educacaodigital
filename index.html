@@ -353,254 +353,38 @@
       .ark { right:28px; transform:scale(.84); transform-origin:bottom right; }
       .animal { font-size:28px; }
     }
-  
-    .loader-wrap{
-      position:fixed;
-      inset:0;
-      z-index:9999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(59,130,246,.20), transparent 30%),
-        linear-gradient(180deg,#07101d 0%,#0a1630 55%,#081120 100%);
-      transition:opacity .45s ease, visibility .45s ease;
-    }
-    .loader-wrap.hide{opacity:0;visibility:hidden;pointer-events:none}
-    .loader-wrap::before,
-    .loader-wrap::after{
-      content:"";
-      position:absolute;
-      width:36vmax;
-      height:36vmax;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(96,165,250,.12), transparent 66%);
-      filter:blur(18px);
-      animation:loaderOrb 8s ease-in-out infinite;
-      pointer-events:none;
-    }
-    .loader-wrap::before{left:-10vmax; top:-10vmax}
-    .loader-wrap::after{right:-14vmax; bottom:-14vmax; animation-delay:-4s}
-    .loader-box{
-      position:relative;
-      width:min(94vw, 600px);
-      padding:26px;
-      border-radius:28px;
-      border:1px solid rgba(96,165,250,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      box-shadow:0 30px 80px rgba(0,0,0,.42);
-      backdrop-filter:blur(10px);
-      color:#eaf2ff;
-      text-align:center;
-      overflow:hidden;
-    }
-    .loader-box::before{
-      content:"";
-      position:absolute;
-      inset:-40% auto auto -20%;
-      width:60%;
-      height:180%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
-      transform:rotate(18deg);
-      animation:loaderShine 2.8s linear infinite;
-      pointer-events:none;
-    }
-    .loader-stage{
-      position:relative;
-      height:170px;
-      border-radius:24px;
-      overflow:hidden;
-      background:
-        linear-gradient(180deg, rgba(96,165,250,.06), rgba(96,165,250,.02)),
-        rgba(4,10,22,.55);
-      border:1px solid rgba(96,165,250,.12);
-      margin-bottom:18px;
-    }
-    .loader-grid{
-      position:absolute; inset:0;
-      background-image:
-        linear-gradient(rgba(96,165,250,.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(96,165,250,.08) 1px, transparent 1px);
-      background-size:26px 26px;
-      mask-image:linear-gradient(180deg, rgba(0,0,0,.96), rgba(0,0,0,.25));
-    }
-    .loader-scan{
-      position:absolute;
-      left:18px; right:18px; top:18px;
-      height:3px;
-      border-radius:999px;
-      background:linear-gradient(90deg, transparent, rgba(125,211,252,.95), transparent);
-      box-shadow:0 0 22px rgba(96,165,250,.5);
-      animation:loaderScan 2.3s ease-in-out infinite;
-    }
-    .loader-worker{
-      position:absolute;
-      left:54px;
-      bottom:30px;
-      font-size:58px;
-      filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));
-      animation:workerWalk 2.6s ease-in-out infinite;
-      z-index:2;
-    }
-    .loader-glow{
-      position:absolute;
-      left:74px;
-      bottom:92px;
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(255,255,255,.95), rgba(96,165,250,.18) 70%, transparent 72%);
-      animation:glowPulse 1.3s ease-in-out infinite;
-      z-index:2;
-    }
-    .loader-bars{
-      position:absolute;
-      right:32px;
-      bottom:30px;
-      display:flex;
-      align-items:flex-end;
-      gap:10px;
-      z-index:2;
-    }
-    .loader-bar{
-      width:24px;
-      border-radius:8px 8px 3px 3px;
-      background:linear-gradient(180deg,#7dd3fc,#3b82f6 55%,#1d4ed8);
-      box-shadow:0 10px 22px rgba(37,99,235,.28);
-      transform-origin:bottom center;
-      animation:barPulse 1.9s ease-in-out infinite;
-    }
-    .loader-bar:nth-child(1){height:34px;animation-delay:.0s}
-    .loader-bar:nth-child(2){height:58px;animation-delay:.15s}
-    .loader-bar:nth-child(3){height:86px;animation-delay:.3s}
-    .loader-bar:nth-child(4){height:114px;animation-delay:.45s}
-    .loader-bar:nth-child(5){height:74px;animation-delay:.6s}
-    .loader-floor{
-      position:absolute; left:18px; right:18px; bottom:22px;
-      height:2px;
-      background:linear-gradient(90deg, transparent, rgba(96,165,250,.35), transparent);
-    }
-    .loader-title{
-      margin:0 0 8px;
-      font-size:30px;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .loader-text{
-      margin:0;
-      color:#b7c9e7;
-      line-height:1.65;
-      font-size:15px;
-    }
-    .loader-progress-shell{
-      width:min(100%, 360px);
-      height:14px;
-      margin:18px auto 12px;
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(96,165,250,.16);
-      background:rgba(255,255,255,.08);
-      box-shadow:inset 0 2px 8px rgba(0,0,0,.2);
-    }
-    .loader-progress{
-      width:22%;
-      height:100%;
-      border-radius:999px;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.18), transparent 25%),
-        linear-gradient(90deg,#2563eb,#60a5fa,#7dd3fc);
-      box-shadow:0 0 22px rgba(96,165,250,.36);
-      animation:loaderBar 2.4s ease-in-out infinite;
-    }
-    .loader-metrics{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin-top:18px;
-    }
-    .loader-metric{
-      padding:10px 8px;
-      border-radius:16px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(96,165,250,.10);
-    }
-    .loader-metric strong{
-      display:block;
-      font-size:18px;
-      margin-bottom:4px;
-    }
-    .loader-metric span{
-      font-size:12px;
-      color:#9fb2cf;
-    }
-    .loader-status{
-      min-height:18px;
-      margin-top:12px;
-      font-size:13px;
-      color:#9fb2cf;
-      letter-spacing:.2px;
-    }
-    @keyframes loaderOrb{
-      0%,100%{transform:translate3d(0,0,0) scale(1)}
-      50%{transform:translate3d(18px,-12px,0) scale(1.05)}
-    }
-    @keyframes loaderShine{100%{transform:translateX(220%) rotate(18deg)}}
-    @keyframes loaderScan{
-      0%{transform:translateY(0);opacity:.35}
-      50%{transform:translateY(104px);opacity:1}
-      100%{transform:translateY(0);opacity:.35}
-    }
-    @keyframes workerWalk{
-      0%,100%{transform:translateX(0) translateY(0)}
-      25%{transform:translateX(10px) translateY(-2px)}
-      50%{transform:translateX(24px) translateY(0)}
-      75%{transform:translateX(10px) translateY(-2px)}
-    }
-    @keyframes glowPulse{
-      0%,100%{opacity:.68;transform:scale(.9)}
-      50%{opacity:1;transform:scale(1.18)}
-    }
-    @keyframes barPulse{
-      0%,100%{transform:scaleY(.86);opacity:.82}
-      50%{transform:scaleY(1.08);opacity:1}
-    }
-    @keyframes loaderBar{
-      0%{width:18%}
-      50%{width:88%}
-      100%{width:26%}
-    }
-
-</style>
+  </style>
 </head>
 <body>
-  <div id="loader" class="loader-wrap">
-    <div class="loader-box">
-      <div class="loader-stage">
-        <div class="loader-grid"></div>
-        <div class="loader-scan"></div>
-        <div class="loader-glow"></div>
-        <div class="loader-worker">👷</div>
-        <div class="loader-bars" aria-hidden="true">
-          <span class="loader-bar"></span>
-          <span class="loader-bar"></span>
-          <span class="loader-bar"></span>
-          <span class="loader-bar"></span>
-          <span class="loader-bar"></span>
+  <div id="loader">
+    <div class="loader-scene">
+      <div class="sky-stars"></div>
+      <div class="moon"></div>
+      <div class="loader-title">
+        Carregando Fórum dos Alunos
+        <small>Animais entrando na arca...</small>
+      </div>
+      <div class="path"></div>
+      <div class="ark">
+        <div class="roof"></div>
+        <div class="house">
+          <div class="window w1"></div>
+          <div class="window w2"></div>
         </div>
-        <div class="loader-floor"></div>
+        <div class="door"></div>
+        <div class="boat"></div>
       </div>
-      <h2 class="loader-title">Montando o mural digital</h2>
-      <p class="loader-text">Preparando banners, notícias, avisos e atalhos da escola com visual atualizado.</p>
-      <div class="loader-progress-shell"><div class="loader-progress"></div></div>
-      <div class="loader-metrics">
-        <div class="loader-metric"><strong>01</strong><span>Conexão</span></div>
-        <div class="loader-metric"><strong>02</strong><span>Leitura</span></div>
-        <div class="loader-metric"><strong>03</strong><span>Montagem</span></div>
-      </div>
-      <div id="loaderStatus" class="loader-status">Conectando ao sistema</div>
+      <div class="animal a1">🦁</div>
+      <div class="animal a2">🐘</div>
+      <div class="animal a3">🦒</div>
+      <div class="animal a4">🦓</div>
+      <div class="animal a5">🐑</div>
+      <div class="animal a6">🐪</div>
+      <div class="ground"></div>
     </div>
   </div>
+
+  <div id="topAlert" class="top-alert"></div>
 
   <div id="siteWrap" style="display:none;">
     <header class="topbar">
@@ -613,7 +397,6 @@
           </div>
         </a>
         <nav class="menu" id="topMenu"></nav>
-        <a id="adminButtonTop" class="btn primary" href="#" target="_blank" rel="noopener">Área restrita</a>
       </div>
     </header>
 
@@ -687,8 +470,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyjWALebfzJTxT1KlLtCEr9y-B-oMeBXBOCasshRF3j4NDb6ct98sAuZN6y_cozZyR_4Q/exec';
-    const ADMIN_URL = 'https://script.google.com/macros/s/AKfycbxeMFW3kxDbGWoMX1rA3j2UA_5kC4hhd3P7iJbUvF3poxiujiuibtwxOCjHfmQySX6dGg/exec?painel=admin';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzQJHu6IujkbP01RP9-1L8RzUI97-I_oQdAGykB9h8Q3BX1mpfmGmWyzwhquYnOSvBd/exec';
 
     function norm(v) {
       return String(v ?? '').trim();
@@ -734,12 +516,28 @@
 
     function applyAlert(config) {
       const alertBox = document.getElementById('topAlert');
+      if (!alertBox) return;
       if (isSim(config.alerta_ativo) && norm(config.alerta_texto)) {
         alertBox.textContent = config.alerta_texto;
         alertBox.style.display = 'block';
       } else {
         alertBox.style.display = 'none';
       }
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function setHtml(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = value;
+    }
+
+    function setDisplay(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = value;
     }
 
     async function fetchApi(action) {
@@ -767,45 +565,46 @@
 
       setThemeFromConfig(config);
       applyAlert(config);
-      applyAdminButtons();
 
       document.title = (config.nome_escola || 'Fórum dos Alunos - CEJ');
-      document.getElementById('brandTitle').textContent = config.nome_escola || 'Fórum dos Alunos - CEJ';
-      document.getElementById('brandSubtitle').textContent = config.subtitulo_site || 'Espaço dos estudantes';
-      document.getElementById('footerText').textContent = config.rodape_texto || 'Fórum dos Alunos - CEJ';
+      setText('brandTitle', config.nome_escola || 'Fórum dos Alunos - CEJ');
+      setText('brandSubtitle', config.subtitulo_site || 'Espaço dos estudantes');
+      setText('footerText', config.rodape_texto || 'Fórum dos Alunos - CEJ');
 
       if (norm(config.logo_url)) {
         const logo = document.getElementById('brandLogo');
-        logo.src = config.logo_url;
-        logo.style.display = 'block';
+        if (logo) {
+          logo.src = config.logo_url;
+          logo.style.display = 'block';
+        }
       }
 
-      document.getElementById('heroTitle').textContent = config.banner_principal_titulo || 'Fórum dos Alunos - CEJ';
-      document.getElementById('heroText').textContent = config.banner_principal_texto || 'Um espaço para projetos, atividades e ideias dos alunos.';
-      document.getElementById('heroMedia').innerHTML = norm(config.banner_principal_imagem)
+      setText('heroTitle', config.banner_principal_titulo || 'Fórum dos Alunos - CEJ');
+      setText('heroText', config.banner_principal_texto || 'Um espaço para projetos, atividades e ideias dos alunos.');
+      setHtml('heroMedia', norm(config.banner_principal_imagem)
         ? `<img src="${escapeHtml(config.banner_principal_imagem)}" alt="Imagem principal">`
-        : `<div class="panel"><div class="empty">Adicione a imagem principal no config.</div></div>`;
+        : `<div class="panel"><div class="empty">Adicione a imagem principal no config.</div></div>`);
 
-      document.getElementById('destaquesTitulo').textContent = config.secao_destaques_titulo || 'Destaques';
-      document.getElementById('destaquesTexto').textContent = config.secao_destaques_texto || 'Projetos e atividades em evidência.';
-      document.getElementById('muralTitulo').textContent = config.secao_mural_titulo || 'Mural dos alunos';
-      document.getElementById('muralTexto').textContent = config.secao_mural_texto || 'Publicações, ideias e produções da turma.';
-      document.getElementById('avisosTitulo').textContent = config.secao_avisos_titulo || 'Avisos';
-      document.getElementById('avisosTexto').textContent = config.secao_avisos_texto || 'Recados rápidos para os alunos.';
-      document.getElementById('linksTitulo').textContent = config.secao_links_titulo || 'Links úteis';
-      document.getElementById('linksTexto').textContent = config.secao_links_texto || 'Acessos e ferramentas para os estudantes.';
+      setText('destaquesTitulo', config.secao_destaques_titulo || 'Destaques');
+      setText('destaquesTexto', config.secao_destaques_texto || 'Projetos e atividades em evidência.');
+      setText('muralTitulo', config.secao_mural_titulo || 'Mural dos alunos');
+      setText('muralTexto', config.secao_mural_texto || 'Publicações, ideias e produções da turma.');
+      setText('avisosTitulo', config.secao_avisos_titulo || 'Avisos');
+      setText('avisosTexto', config.secao_avisos_texto || 'Recados rápidos para os alunos.');
+      setText('linksTitulo', config.secao_links_titulo || 'Links úteis');
+      setText('linksTexto', config.secao_links_texto || 'Acessos e ferramentas para os estudantes.');
 
       const heroBtn1Text = norm(config.hero_botao_1_texto) || 'Ver mural';
       const heroBtn1Link = norm(config.hero_botao_1_link) || '#muralSection';
       const heroBtn2Text = norm(config.hero_botao_2_texto) || 'Ver links';
       const heroBtn2Link = norm(config.hero_botao_2_link) || '#linksSection';
-      document.getElementById('heroActions').innerHTML = `
+      setHtml('heroActions', `
         <a class="btn primary" href="${escapeHtml(heroBtn1Link)}">${escapeHtml(heroBtn1Text)}</a>
         <a class="btn" href="${escapeHtml(heroBtn2Link)}">${escapeHtml(heroBtn2Text)}</a>
-      `;
+      `);
 
       const topMenu = document.getElementById('topMenu');
-      topMenu.innerHTML = menu
+      if (topMenu) topMenu.innerHTML = menu
         .filter(item => isSim(item.ativo))
         .map(item => {
           const ancora = norm(item.link) || '#inicio';
@@ -813,10 +612,10 @@
           return `<a href="${escapeHtml(ancora)}">${escapeHtml(nome)}</a>`;
         }).join('');
 
-      document.getElementById('destaquesSection').style.display = isSim(config.mostrar_destaques) ? 'block' : 'none';
-      document.getElementById('muralSection').style.display = isSim(config.mostrar_mural) ? 'block' : 'none';
-      document.getElementById('avisosSection').style.display = isSim(config.mostrar_avisos) ? 'block' : 'none';
-      document.getElementById('linksSection').style.display = isSim(config.mostrar_links) ? 'block' : 'none';
+      setDisplay('destaquesSection', isSim(config.mostrar_destaques) ? 'block' : 'none');
+      setDisplay('muralSection', isSim(config.mostrar_mural) ? 'block' : 'none');
+      setDisplay('avisosSection', isSim(config.mostrar_avisos) ? 'block' : 'none');
+      setDisplay('linksSection', isSim(config.mostrar_links) ? 'block' : 'none');
 
       return config;
     }
@@ -842,7 +641,7 @@
         bannersWrap.innerHTML = banners.length ? banners.map(item => `
           <article class="card banner-card">
             <div class="thumb">
-              <img src="${escapeHtml(getImageUrl(item) || getFallbackImage(config, true))}" alt="${escapeHtml(item.titulo || 'Destaque')}">
+              <img src="${escapeHtml(norm(item.imagem_url) || getFallbackImage(config, true))}" alt="${escapeHtml(item.titulo || 'Destaque')}">
             </div>
             <div class="body">
               <h4>${escapeHtml(item.titulo || 'Sem título')}</h4>
@@ -855,7 +654,7 @@
         noticiasWrap.innerHTML = noticias.slice(0, limiteMural).length ? noticias.slice(0, limiteMural).map(item => `
           <article class="card news-card">
             <div class="thumb">
-              <img src="${escapeHtml(getImageUrl(item) || getFallbackImage(config, false))}" alt="${escapeHtml(item.titulo || 'Mural')}">
+              <img src="${escapeHtml(norm(item.imagem_url) || getFallbackImage(config, false))}" alt="${escapeHtml(item.titulo || 'Mural')}">
             </div>
             <div class="body">
               <span class="tag">${escapeHtml(item.categoria || 'Mural')}</span>
