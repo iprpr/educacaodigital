@@ -68,7 +68,11 @@ function _ativarModo(modo) {
     elApp.classList.add('entrando');
     setTimeout(() => elApp.classList.remove('entrando'), 400);
 
-    elRodape.style.left = 'var(--sidebar-w)';
+    // No desktop, desloca o rodapé para alinhar com o conteúdo (após a sidebar).
+    // No mobile, o CSS cuida disso com left: 0 !important — não sobrepomos.
+    if (window.innerWidth > 768) {
+      elRodape.style.left = 'var(--sidebar-w)';
+    }
     _construirSidebar(modo);
 
     // Navega para rota padrão do modo

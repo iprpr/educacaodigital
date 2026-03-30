@@ -43,6 +43,16 @@
   <!-- MODO APP -->
   <div id="app" class="app app--oculto">
 
+    <!-- OVERLAY MOBILE (clique fora fecha o menu) -->
+    <div id="mobile-overlay" class="mobile-overlay" aria-hidden="true"></div>
+
+    <!-- BOTÃO HAMBÚRGUER MOBILE -->
+    <button id="btn-hamburguer" class="btn-hamburguer" aria-label="Abrir menu" aria-expanded="false">
+      <span class="btn-hamburguer__linha"></span>
+      <span class="btn-hamburguer__linha"></span>
+      <span class="btn-hamburguer__linha"></span>
+    </button>
+
     <!-- SIDEBAR -->
     <aside id="sidebar" class="sidebar">
       <div class="sidebar__header">
@@ -85,5 +95,7 @@
   </footer>
 
   <script type="module" src="main.js"></script>
+  <!-- Menu mobile — carregado após main.js -->
+  <script type="module" src="mobile-menu.js"></script>
 </body>
 </html>

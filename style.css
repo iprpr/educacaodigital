@@ -1243,21 +1243,7 @@ body {
   .grid-2 { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 560px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .sidebar {
-    height: auto;
-    max-height: 45vh;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .conteudo-principal { height: auto; }
-}
+/* (bloco anterior de 560px removido — substituído pelo sistema mobile abaixo) */
 
 
 /* ── FOOTER FIXO GLOBAL ── */
@@ -1831,3 +1817,174 @@ body {
   font-size: 0.9rem;
   color: var(--text-2);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE NAVIGATION SYSTEM — max-width: 768px
+   Inspirado no ChatGPT mobile: sidebar como drawer, swipe, overlay.
+   ⚠️  NENHUMA regra aqui afeta o layout desktop (> 768px).
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── BOTÃO HAMBÚRGUER ──────────────────────────────────────────────────────── */
+
+.btn-hamburguer {
+  /* Oculto por padrão — aparece só no mobile */
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Posicionado fixo no canto superior esquerdo, sobre o conteúdo */
+  .btn-hamburguer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1100; /* acima do overlay (1000) e da sidebar (1050) */
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-2);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+    /* Esconde quando menu está aberto (JS adiciona .menu-open ao #app) */
+  }
+
+  .btn-hamburguer:hover {
+    background: var(--primary-dim);
+    border-color: var(--primary);
+  }
+
+  /* As três linhas do ícone hambúrguer */
+  .btn-hamburguer__linha {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--text-2);
+    transition: transform var(--transition), opacity var(--transition), width var(--transition);
+    transform-origin: center;
+  }
+
+  /* Animação das linhas → X quando aberto */
+  .app.menu-open .btn-hamburguer .btn-hamburguer__linha:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .app.menu-open .btn-hamburguer .btn-hamburguer__linha:nth-child(2) {
+    opacity: 0;
+    width: 0;
+  }
+  .app.menu-open .btn-hamburguer .btn-hamburguer__linha:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+/* ── OVERLAY ESCURO ────────────────────────────────────────────────────────── */
+
+/* Estrutura base — invisível no desktop */
+.mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000; /* abaixo da sidebar (1050), acima do conteúdo */
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    /* Estado padrão: invisível e não-interativo */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Ativo quando menu está aberto */
+  .app.menu-open .mobile-overlay {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* ── SIDEBAR COMO DRAWER MOBILE ────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Redefine o layout do app: ocupa tela toda, sem coluna da sidebar */
+  .app {
+    grid-template-columns: 1fr !important;
+    position: relative;
+  }
+
+  /* Sidebar sai da grade e vira elemento fixo (drawer) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(var(--sidebar-w), 80vw); /* nunca ocupa mais de 80% da tela */
+    height: 100dvh;                      /* dvh para respeitar barra de endereço */
+    z-index: 1050;                       /* acima do overlay */
+    border-right: 1px solid var(--border-strong);
+    border-bottom: none;                 /* remove borda inferior do layout antigo */
+
+    /* Estado fechado: fora da tela à esquerda */
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;              /* hint de GPU para animação suave */
+
+    /* Sombra para destacar da sobreposição */
+    box-shadow: none;
+  }
+
+  /* Estado aberto */
+  .app.menu-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Conteúdo principal ocupa tela toda (sidebar flutua sobre ele) */
+  .conteudo-principal {
+    width: 100%;
+    height: 100dvh;
+    /* Padding top para não colidir com o botão hambúrguer */
+    padding-top: 0;
+  }
+
+  /* Padding interno do conteúdo — espaço extra no topo para o hambúrguer */
+  .conteudo-view {
+    padding-top: 4rem !important; /* altura do botão + folga */
+  }
+
+  /* Rodapé: full-width no mobile (JS não deve sobrepor left) */
+  .rodape-fixo {
+    left: 0 !important;
+  }
+
+  /* Sidebar header: adiciona espaço para o botão hambúrguer não colidir */
+  .sidebar__header {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
+/* ── AJUSTES FINOS PARA TELAS MUITO PEQUENAS (< 400px) ─────────────────────── */
+
+@media (max-width: 400px) {
+  .sidebar {
+    width: 88vw; /* quase full-width em telas minúsculas */
+  }
+
+  .btn-hamburguer {
+    top: 8px;
+    left: 8px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   FIM DO SISTEMA MOBILE
+   ══════════════════════════════════════════════════════════════════════════════ */
