@@ -10,6 +10,8 @@ import * as CacaPalavras   from './caca-palavras.js';
 import * as MemoriaPre3    from './memoria-pre3.js';
 import * as Memoria1Ano    from './memoria-1ano.js';
 import * as Arrastar3Ano   from './arrastar-3ano.js';
+import * as PalavrasCruzadas from './palavras-cruzadas.js';
+import * as QuizInformatica  from './quiz-informatica.js';
 
 /**
  * Catálogo de jogos registrados.
@@ -51,6 +53,20 @@ export const JOGOS = [
     descricao: 'Teste sua velocidade no teclado',
     emoji: '⌨️',
     modulo: DigitacaoJogo,
+  },
+  {
+    id: 'palavras-cruzadas',
+    nome: 'Palavras Cruzadas',
+    descricao: 'Informática · 3 níveis de dificuldade',
+    emoji: '✏️',
+    modulo: PalavrasCruzadas,
+  },
+  {
+    id: 'quiz-informatica',
+    nome: 'Quiz de Informática',
+    descricao: '4 categorias · Hardware, Software, Internet e Segurança',
+    emoji: '🧠',
+    modulo: QuizInformatica,
   },
   {
     id: 'exemplo',

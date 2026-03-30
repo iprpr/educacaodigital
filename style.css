@@ -1245,7 +1245,9 @@ body {
   /* Título da tela inicial: permite quebra de linha no mobile */
   .tela-inicial__titulo {
     white-space: normal;
-    font-size: 2rem;
+    font-size: 1.75rem;
+    word-break: keep-all;      /* não quebra dentro de palavras com hífen */
+    overflow-wrap: break-word;
   }
 }
 
