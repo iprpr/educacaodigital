@@ -1,3 +1,4 @@
+import { renderSearch } from './features/search/search.ui.js';
 /**
  * main.js
  * Entrada principal do SPA RPR Academy.
@@ -20,6 +21,7 @@ const btnVoltar      = document.getElementById('btn-voltar');
 const elRodape       = document.querySelector('.rodape-fixo');
 const btnJogos       = document.getElementById('btn-jogos');
 const btnAcademico   = document.getElementById('btn-academico');
+const btnBusca = document.getElementById('btn-busca');
 
 // ── INICIALIZAÇÃO ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -227,3 +229,6 @@ function _bindBotoesInicio() {
 function _bindBotaoVoltar() {
   btnVoltar?.addEventListener('click', _voltarInicio);
 }
+registrarRota('busca', renderSearch);
+
+btnBusca?.addEventListener('click', () => _ativarModo('busca'));

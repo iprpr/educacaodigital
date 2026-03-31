@@ -1,0 +1,1 @@
+export function renderSearch(container){ container.innerHTML='<h1>Busca IA funcionando</h1>'; }
