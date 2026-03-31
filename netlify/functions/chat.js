@@ -1,20 +1,32 @@
 export async function handler(event) {
-  
-console.log("API KEY:", process.env.OPENROUTER_API_KEY);
-  
+
+  console.log("API KEY:", process.env.OPENROUTER_API_KEY);
+
   try {
     const { messages } = JSON.parse(event.body);
 
+    if (!process.env.OPENROUTER_API_KEY) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "API KEY não encontrada no ambiente"
+        })
+      };
+    }
+
     const models = [
       "mistralai/mistral-7b-instruct",
-      "meta-llama/llama-3-8b-instruct",
-      "google/gemma-7b-it"
+      "openchat/openchat-7b",
+      "meta-llama/llama-3-8b-instruct"
     ];
 
     let lastError = null;
 
     for (const model of models) {
       try {
+
+        console.log("Tentando modelo:", model);
+
         const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -29,21 +41,29 @@ console.log("API KEY:", process.env.OPENROUTER_API_KEY);
 
         const data = await res.json();
 
-        // 🔥 ESSA LINHA É A CHAVE
-        if (res.ok && !data.error) {
+        console.log("Resposta:", data);
+
+        // ✅ sucesso real
+        if (res.ok && data.choices && data.choices.length > 0) {
           return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+              reply: data.choices[0].message.content,
+              model
+            })
           };
         }
 
+        // guarda erro
         lastError = data;
 
       } catch (err) {
+        console.log("Erro no modelo:", model, err);
         lastError = err;
       }
     }
 
+    // ❌ todos falharam
     return {
       statusCode: 500,
       body: JSON.stringify({
@@ -53,9 +73,13 @@ console.log("API KEY:", process.env.OPENROUTER_API_KEY);
     };
 
   } catch (error) {
+    console.log("Erro geral:", error);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({
+        error: error.message
+      })
     };
   }
 }
