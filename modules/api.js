@@ -4,7 +4,7 @@
  * Trocar API_URL pela URL real do Web App.
  */
 
-const API_URL = '
+const API_URL = '';
 
 // Cache simples em memória para evitar requisições repetidas
 const _cache = new Map();
