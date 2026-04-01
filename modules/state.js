@@ -5,13 +5,14 @@
  */
 
 const _estado = {
-  tela: 'inicial',       // 'inicial' | 'jogos' | 'academico'
-  modo: null,            // 'jogos' | 'academico'
-  sidebarAtiva: null,    // item ativo na sidebar
-  professor: '',         // professor filtrado atual
-  dadosApi: [],          // dados carregados da API
+  tela: 'inicial',
+  modo: null,
+  sidebarAtiva: null,
+  professor: '',
+  dadosApi: [],
   carregando: false,
   erro: null,
+  usuario: null,   // perfil logado { id, nome, email, tipo, status }
 };
 
 const _assinantes = new Map();
