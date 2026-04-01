@@ -1,54 +1,540 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · RPR Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0f172a;--bg-2:#1e293b;--bg-3:#162032;--bg-4:#0d1a2b;
+      --border:rgba(56,189,248,0.1);--border-strong:rgba(56,189,248,0.25);
+      --primary:#38bdf8;--primary-dim:rgba(56,189,248,0.12);--primary-dark:#0ea5e9;
+      --accent:#818cf8;
+      --success:#34d399;--success-dim:rgba(52,211,153,0.12);
+      --warning:#fbbf24;--warning-dim:rgba(251,191,36,0.12);
+      --danger:#f87171;--danger-dim:rgba(248,113,113,0.12);
+      --text:#e2e8f0;--text-2:#94a3b8;--text-3:#64748b;--text-inv:#0f172a;
+      --sidebar-w:220px;--radius:12px;--radius-sm:8px;--radius-lg:18px;
+      --shadow-card:0 4px 24px rgba(0,0,0,0.35);
+      --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'JetBrains Mono',monospace;
+    }
+    html{font-size:16px;-webkit-font-smoothing:antialiased;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* LOGIN */
+    #tela-login{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+      background:var(--bg);z-index:100;
+    }
+    #tela-login::before{
+      content:'';position:fixed;inset:0;
+      background-image:linear-gradient(rgba(56,189,248,0.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(56,189,248,0.04) 1px,transparent 1px);
+      background-size:48px 48px;pointer-events:none;
+    }
+    .login-card{
+      position:relative;z-index:1;background:var(--bg-2);
+      border:1px solid var(--border-strong);border-radius:var(--radius-lg);
+      padding:2.5rem 2rem;width:100%;max-width:380px;
+      box-shadow:var(--shadow-card),0 0 32px rgba(56,189,248,0.15);
+    }
+    .login-card h2{font-family:var(--font-display);font-weight:800;font-size:1.4rem;margin-bottom:.3rem;}
+    .login-card p{color:var(--text-2);font-size:.85rem;margin-bottom:1.75rem;}
+    .campo{margin-bottom:1rem;}
+    .campo label{display:block;font-size:.78rem;font-weight:500;color:var(--text-2);margin-bottom:.4rem;letter-spacing:.04em;text-transform:uppercase;}
+    .campo input{
+      width:100%;background:var(--bg-3);border:1px solid var(--border);
+      border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);
+      font-size:.95rem;padding:.7rem .9rem;outline:none;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .campo input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim);}
+    .campo input::placeholder{color:var(--text-3);}
+    .btn-login{
+      width:100%;background:var(--primary);color:var(--text-inv);
+      font-family:var(--font-display);font-weight:700;font-size:.95rem;
+      border:none;border-radius:var(--radius-sm);padding:.75rem;cursor:pointer;
+      transition:background .2s;margin-top:.5rem;
+    }
+    .btn-login:hover{background:var(--primary-dark);}
+    .btn-login:disabled{opacity:.55;cursor:not-allowed;}
+    .login-erro{color:var(--danger);font-size:.83rem;margin-top:.75rem;text-align:center;}
+
+    /* LAYOUT */
+    #app{display:none;min-height:100vh;}
+    #app.visivel{display:flex;}
+    .sidebar{
+      width:var(--sidebar-w);background:var(--bg-2);border-right:1px solid var(--border);
+      display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;
+      padding:1.5rem 0;z-index:10;
+    }
+    .sidebar__logo{padding:0 1.25rem 1.5rem;border-bottom:1px solid var(--border);}
+    .sidebar__sigla{font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--primary);letter-spacing:.1em;}
+    .sidebar__sub{font-size:.75rem;color:var(--text-3);margin-top:.15rem;}
+    .sidebar__badge{
+      display:inline-block;background:rgba(129,140,248,0.15);
+      border:1px solid rgba(129,140,248,0.3);color:var(--accent);
+      font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;
+      margin-top:.4rem;letter-spacing:.05em;
+    }
+    nav{margin-top:1rem;flex:1;}
+    .nav-item{
+      display:flex;align-items:center;gap:.65rem;padding:.65rem 1.25rem;
+      color:var(--text-2);font-size:.88rem;cursor:pointer;
+      transition:background .15s,color .15s;border-left:2px solid transparent;
+    }
+    .nav-item:hover{background:var(--bg-3);color:var(--text);}
+    .nav-item.ativo{color:var(--primary);border-left-color:var(--primary);background:var(--primary-dim);}
+    .nav-item__icon{font-size:1rem;width:20px;text-align:center;}
+    .sidebar__sair{
+      margin:0 .75rem .5rem;padding:.6rem 1rem;
+      color:var(--danger);font-size:.85rem;cursor:pointer;border-radius:var(--radius-sm);
+      display:flex;align-items:center;gap:.6rem;
+      transition:background .15s;
+    }
+    .sidebar__sair:hover{background:var(--danger-dim);}
+
+    .conteudo{
+      margin-left:var(--sidebar-w);flex:1;padding:2rem;
+      max-width:calc(100vw - var(--sidebar-w));
+    }
+    .page-title{font-family:var(--font-display);font-weight:800;font-size:1.5rem;margin-bottom:.3rem;}
+    .page-sub{color:var(--text-2);font-size:.9rem;margin-bottom:1.75rem;}
+
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat-card{
+      background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:1.1rem 1.25rem;
+    }
+    .stat-card__num{font-family:var(--font-display);font-weight:800;font-size:2rem;line-height:1;}
+    .stat-card__label{color:var(--text-2);font-size:.8rem;margin-top:.3rem;}
+    .stat-card--pendente .stat-card__num{color:var(--warning);}
+    .stat-card--aprovado .stat-card__num{color:var(--success);}
+    .stat-card--reprovado .stat-card__num{color:var(--danger);}
+    .stat-card--total .stat-card__num{color:var(--primary);}
+
+    /* TABS */
+    .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;}
+    .tab{
+      padding:.45rem 1rem;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;
+      cursor:pointer;color:var(--text-2);background:transparent;border:none;
+      transition:background .15s,color .15s;
+    }
+    .tab:hover{background:var(--bg-2);color:var(--text);}
+    .tab.ativo{background:var(--primary-dim);color:var(--primary);border:1px solid var(--border-strong);}
+
+    /* TABELA DE USUÁRIOS */
+    .tabela-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:.88rem;}
+    th{
+      text-align:left;padding:.65rem 1rem;font-size:.75rem;font-weight:600;
+      color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;
+      border-bottom:1px solid var(--border);
+    }
+    td{padding:.75rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,255,255,0.02);}
+    .badge{
+      display:inline-flex;align-items:center;gap:.3rem;
+      padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:600;
+      letter-spacing:.03em;
+    }
+    .badge--pendente{background:var(--warning-dim);color:var(--warning);}
+    .badge--aprovado{background:var(--success-dim);color:var(--success);}
+    .badge--reprovado{background:var(--danger-dim);color:var(--danger);}
+    .badge--aluno{background:var(--primary-dim);color:var(--primary);}
+    .badge--professor{background:rgba(129,140,248,0.12);color:var(--accent);}
+    .badge--admin{background:rgba(251,191,36,0.12);color:var(--warning);}
+    .acoes{display:flex;gap:.4rem;}
+    .btn-acao{
+      padding:.3rem .7rem;border-radius:var(--radius-sm);border:none;
+      font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s;
+    }
+    .btn-acao:hover{opacity:.8;}
+    .btn-aprovar{background:var(--success-dim);color:var(--success);}
+    .btn-reprovar{background:var(--danger-dim);color:var(--danger);}
+    .btn-restaurar{background:var(--primary-dim);color:var(--primary);}
+
+    /* LOG */
+    .log-lista{display:flex;flex-direction:column;gap:.5rem;}
+    .log-item{
+      display:flex;align-items:flex-start;gap:.75rem;
+      background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);
+      padding:.75rem 1rem;font-size:.85rem;
+    }
+    .log-item__icon{font-size:1rem;margin-top:.05rem;flex-shrink:0;}
+    .log-item__corpo{flex:1;}
+    .log-item__texto{color:var(--text);}
+    .log-item__tempo{color:var(--text-3);font-size:.75rem;font-family:var(--font-mono);margin-top:.15rem;}
+    .log-item--aprovado{border-left:3px solid var(--success);}
+    .log-item--reprovado{border-left:3px solid var(--danger);}
+    .log-item--cadastro{border-left:3px solid var(--primary);}
+
+    /* VAZIO */
+    .vazio{text-align:center;padding:3rem;color:var(--text-3);font-size:.9rem;}
+
+    /* UTILITÁRIOS */
+    .oculto{display:none!important;}
+    .secao{display:none;}
+    .secao.ativa{display:block;}
+  </style>
 </head>
 <body>
 
-<h2>Cadastro</h2>
+<!-- LOGIN -->
+<div id="tela-login">
+  <div class="login-card">
+    <h2>Admin RPR</h2>
+    <p>Acesso restrito ao administrador</p>
+    <div class="campo">
+      <label>E-mail</label>
+      <input id="adm-email" type="email" placeholder="admin@email.com" autocomplete="email" />
+    </div>
+    <div class="campo">
+      <label>Senha</label>
+      <input id="adm-senha" type="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <div id="login-erro" class="login-erro oculto"></div>
+    <button class="btn-login" id="btn-login">Entrar</button>
+  </div>
+</div>
 
-<input id="nome" placeholder="Nome">
-<input id="email" placeholder="Email">
-<input id="senha" type="password" placeholder="Senha">
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <div class="sidebar__sigla">RPR</div>
+      <div class="sidebar__sub">Educação Digital</div>
+      <div class="sidebar__badge">ADMIN</div>
+    </div>
+    <nav>
+      <div class="nav-item ativo" data-secao="visao-geral">
+        <span class="nav-item__icon">📊</span> Visão Geral
+      </div>
+      <div class="nav-item" data-secao="pendentes">
+        <span class="nav-item__icon">⏳</span> Pendentes
+        <span id="badge-pendentes" style="margin-left:auto;background:var(--warning-dim);color:var(--warning);font-size:.7rem;font-weight:700;padding:.1rem .45rem;border-radius:999px;"></span>
+      </div>
+      <div class="nav-item" data-secao="usuarios">
+        <span class="nav-item__icon">👥</span> Todos os Usuários
+      </div>
+      <div class="nav-item" data-secao="log">
+        <span class="nav-item__icon">📋</span> Log de Atividades
+      </div>
+    </nav>
+    <div class="sidebar__sair" id="btn-sair">
+      <span>🚪</span> Sair
+    </div>
+  </aside>
 
-<select id="tipo">
-  <option value="aluno">Aluno</option>
-  <option value="professor">Professor</option>
-</select>
+  <main class="conteudo">
 
-<button id="btn">Cadastrar</button>
+    <!-- VISÃO GERAL -->
+    <section class="secao ativa" id="secao-visao-geral">
+      <div class="page-title">Visão Geral</div>
+      <p class="page-sub">Resumo da plataforma</p>
+      <div class="stats">
+        <div class="stat-card stat-card--total">
+          <div class="stat-card__num" id="stat-total">–</div>
+          <div class="stat-card__label">Total de usuários</div>
+        </div>
+        <div class="stat-card stat-card--pendente">
+          <div class="stat-card__num" id="stat-pendentes">–</div>
+          <div class="stat-card__label">Aguardando aprovação</div>
+        </div>
+        <div class="stat-card stat-card--aprovado">
+          <div class="stat-card__num" id="stat-aprovados">–</div>
+          <div class="stat-card__label">Aprovados</div>
+        </div>
+        <div class="stat-card stat-card--reprovado">
+          <div class="stat-card__num" id="stat-reprovados">–</div>
+          <div class="stat-card__label">Reprovados</div>
+        </div>
+      </div>
+      <div class="page-title" style="font-size:1.1rem;margin-bottom:1rem;">Últimas atividades</div>
+      <div id="log-geral" class="log-lista"></div>
+    </section>
+
+    <!-- PENDENTES -->
+    <section class="secao" id="secao-pendentes">
+      <div class="page-title">Pendentes</div>
+      <p class="page-sub">Cadastros aguardando aprovação</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Cadastrado em</th><th>Ações</th></tr></thead>
+          <tbody id="tbody-pendentes"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TODOS USUÁRIOS -->
+    <section class="secao" id="secao-usuarios">
+      <div class="page-title">Todos os Usuários</div>
+      <p class="page-sub">Gerencie todos os cadastros</p>
+      <div class="tabs">
+        <button class="tab ativo" data-filtro="todos">Todos</button>
+        <button class="tab" data-filtro="aprovado">Aprovados</button>
+        <button class="tab" data-filtro="pendente">Pendentes</button>
+        <button class="tab" data-filtro="reprovado">Reprovados</button>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Status</th><th>Cadastrado em</th><th>Ações</th></tr></thead>
+          <tbody id="tbody-usuarios"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section class="secao" id="secao-log">
+      <div class="page-title">Log de Atividades</div>
+      <p class="page-sub">Histórico completo de ações administrativas</p>
+      <div id="log-completo" class="log-lista"></div>
+    </section>
+
+  </main>
+</div>
 
 <script type="module">
-import { supabase } from "../modules/supabase.js";
+import { supabase } from '../modules/supabase.js';
 
-document.getElementById("btn").onclick = async () => {
+let _logLocal = JSON.parse(localStorage.getItem('rpr_admin_log') || '[]');
+let _usuariosCache = [];
+let _filtroAtual = 'todos';
 
-  const nome = document.getElementById("nome").value;
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  const tipo = document.getElementById("tipo").value;
+// ── UTILITÁRIOS ──────────────────────────────────────────────────────────────
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password: senha
-  });
+function formatarData(iso) {
+  if (!iso) return '–';
+  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+}
 
-  if (error) {
-    alert(error.message);
+function salvarLog(tipo, texto) {
+  const item = { tipo, texto, ts: new Date().toISOString() };
+  _logLocal.unshift(item);
+  if (_logLocal.length > 200) _logLocal = _logLocal.slice(0, 200);
+  localStorage.setItem('rpr_admin_log', JSON.stringify(_logLocal));
+}
+
+function renderizarLog(lista, containerId) {
+  const el = document.getElementById(containerId);
+  if (!lista.length) { el.innerHTML = '<div class="vazio">Nenhuma atividade registrada.</div>'; return; }
+  const icons = { aprovado: '✅', reprovado: '❌', cadastro: '📝' };
+  el.innerHTML = lista.slice(0, 50).map(item => `
+    <div class="log-item log-item--${item.tipo}">
+      <span class="log-item__icon">${icons[item.tipo] || '📋'}</span>
+      <div class="log-item__corpo">
+        <div class="log-item__texto">${item.texto}</div>
+        <div class="log-item__tempo">${formatarData(item.ts)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function badgeStatus(status) {
+  return `<span class="badge badge--${status}">${status}</span>`;
+}
+
+function badgeTipo(tipo) {
+  return `<span class="badge badge--${tipo}">${tipo}</span>`;
+}
+
+// ── DADOS ────────────────────────────────────────────────────────────────────
+
+async function carregarUsuarios() {
+  const { data, error } = await supabase.from('usuarios').select('*').order('created_at', { ascending: false });
+  if (error || !data) return;
+  _usuariosCache = data;
+
+  // Stats
+  const total     = data.length;
+  const pendentes = data.filter(u => u.status === 'pendente').length;
+  const aprovados = data.filter(u => u.status === 'aprovado').length;
+  const reprovados = data.filter(u => u.status === 'reprovado').length;
+
+  document.getElementById('stat-total').textContent     = total;
+  document.getElementById('stat-pendentes').textContent = pendentes;
+  document.getElementById('stat-aprovados').textContent = aprovados;
+  document.getElementById('stat-reprovados').textContent = reprovados;
+  document.getElementById('badge-pendentes').textContent = pendentes || '';
+
+  // Pendentes na tab
+  const tbodyP = document.getElementById('tbody-pendentes');
+  const pList = data.filter(u => u.status === 'pendente');
+  if (!pList.length) {
+    tbodyP.innerHTML = '<tr><td colspan="5" class="vazio">Nenhum cadastro pendente. 🎉</td></tr>';
+  } else {
+    tbodyP.innerHTML = pList.map(u => `
+      <tr>
+        <td><strong>${u.nome}</strong></td>
+        <td style="color:var(--text-2)">${u.email}</td>
+        <td>${badgeTipo(u.tipo)}</td>
+        <td style="color:var(--text-3);font-size:.8rem">${formatarData(u.created_at)}</td>
+        <td>
+          <div class="acoes">
+            <button class="btn-acao btn-aprovar" data-id="${u.id}" data-nome="${u.nome}" data-action="aprovar">✓ Aprovar</button>
+            <button class="btn-acao btn-reprovar" data-id="${u.id}" data-nome="${u.nome}" data-action="reprovar">✗ Reprovar</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  renderizarTabela(_filtroAtual);
+  bindAcoes();
+
+  // Log na visão geral
+  renderizarLog(_logLocal, 'log-geral');
+  renderizarLog(_logLocal, 'log-completo');
+}
+
+function renderizarTabela(filtro) {
+  _filtroAtual = filtro;
+  const tbody = document.getElementById('tbody-usuarios');
+  const lista = filtro === 'todos' ? _usuariosCache : _usuariosCache.filter(u => u.status === filtro);
+
+  if (!lista.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="vazio">Nenhum usuário encontrado.</td></tr>`;
     return;
   }
 
-  await supabase.from("usuarios").insert({
-    id: data.user.id,
-    nome,
-    tipo,
-    status: "pendente"
+  tbody.innerHTML = lista.map(u => `
+    <tr>
+      <td><strong>${u.nome}</strong></td>
+      <td style="color:var(--text-2)">${u.email}</td>
+      <td>${badgeTipo(u.tipo)}</td>
+      <td>${badgeStatus(u.status)}</td>
+      <td style="color:var(--text-3);font-size:.8rem">${formatarData(u.created_at)}</td>
+      <td>
+        <div class="acoes">
+          ${u.status !== 'aprovado'  ? `<button class="btn-acao btn-aprovar"  data-id="${u.id}" data-nome="${u.nome}" data-action="aprovar">✓</button>` : ''}
+          ${u.status !== 'reprovado' ? `<button class="btn-acao btn-reprovar" data-id="${u.id}" data-nome="${u.nome}" data-action="reprovar">✗</button>` : ''}
+          ${u.status !== 'pendente'  ? `<button class="btn-acao btn-restaurar" data-id="${u.id}" data-nome="${u.nome}" data-action="pendente">↩</button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  bindAcoes();
+}
+
+function bindAcoes() {
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id     = btn.dataset.id;
+      const nome   = btn.dataset.nome;
+      const action = btn.dataset.action;
+
+      const novoStatus = action === 'aprovar' ? 'aprovado' : action === 'reprovar' ? 'reprovado' : 'pendente';
+
+      await supabase.from('usuarios').update({ status: novoStatus }).eq('id', id);
+
+      const tipoLog = action === 'aprovar' ? 'aprovado' : action === 'reprovar' ? 'reprovado' : 'cadastro';
+      const textoLog = action === 'aprovar'
+        ? `${nome} foi aprovado(a)`
+        : action === 'reprovar'
+        ? `${nome} foi reprovado(a)`
+        : `${nome} voltou para pendente`;
+
+      salvarLog(tipoLog, textoLog);
+      await carregarUsuarios();
+    });
   });
+}
 
-  alert("Cadastro enviado! Aguarde aprovação.");
-};
+// ── NAVEGAÇÃO ────────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const secao = item.dataset.secao;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+    document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+    item.classList.add('ativo');
+    document.getElementById(`secao-${secao}`)?.classList.add('ativa');
+  });
+});
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+    tab.classList.add('ativo');
+    renderizarTabela(tab.dataset.filtro);
+  });
+});
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+
+async function verificarAdmin(userId) {
+  const { data } = await supabase.from('usuarios').select('tipo,status').eq('id', userId).single();
+  return data?.tipo === 'admin' && data?.status === 'aprovado';
+}
+
+async function iniciar() {
+  const { data: sessao } = await supabase.auth.getSession();
+  if (sessao?.session?.user) {
+    const ok = await verificarAdmin(sessao.session.user.id);
+    if (ok) { mostrarApp(); return; }
+  }
+  document.getElementById('tela-login').style.display = 'flex';
+}
+
+function mostrarApp() {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('app').classList.add('visivel');
+  carregarUsuarios();
+}
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email = document.getElementById('adm-email').value.trim();
+  const senha  = document.getElementById('adm-senha').value;
+  const erroEl = document.getElementById('login-erro');
+  erroEl.classList.add('oculto');
+
+  if (!email || !senha) { erroEl.textContent = 'Preencha e-mail e senha.'; erroEl.classList.remove('oculto'); return; }
+
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'Entrando…';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+
+  if (error) {
+    erroEl.textContent = error.message;
+    erroEl.classList.remove('oculto');
+    btn.disabled = false; btn.textContent = 'Entrar';
+    return;
+  }
+
+  const ok = await verificarAdmin(data.user.id);
+  if (!ok) {
+    erroEl.textContent = 'Acesso negado. Apenas administradores podem entrar aqui.';
+    erroEl.classList.remove('oculto');
+    await supabase.auth.signOut();
+    btn.disabled = false; btn.textContent = 'Entrar';
+    return;
+  }
+
+  mostrarApp();
+});
+
+// Enter no login
+['adm-email','adm-senha'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-login').click();
+  });
+});
+
+document.getElementById('btn-sair').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+iniciar();
 </script>
-
 </body>
 </html>
