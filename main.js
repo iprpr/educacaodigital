@@ -11,19 +11,23 @@ import { renderAlunos } from './features/academico/alunos.js';
 import { JOGOS, buscarJogo } from './features/jogos/index.js';
 import { login, logout, restaurarSessao } from './modules/auth.js';
 
-// ── ELEMENTOS DOM ──────────────────────────────────────────────────────────────
-const elTelaInicial  = document.getElementById('tela-inicial');
-const elApp          = document.getElementById('app');
-const elSidebarNav   = document.getElementById('sidebar-nav');
-const elSidebarTag   = document.getElementById('sidebar-modo-tag');
-const elConteudoView = document.getElementById('conteudo-view');
-const btnVoltar      = document.getElementById('btn-voltar');
-const elRodape       = document.querySelector('.rodape-fixo');
-const btnJogos       = document.getElementById('btn-jogos');
-const btnAcademico   = document.getElementById('btn-academico');
+// ── ELEMENTOS DOM — declarados aqui, atribuídos no DOMContentLoaded ───────────
+let elTelaInicial, elApp, elSidebarNav, elSidebarTag, elConteudoView;
+let btnVoltar, elRodape, btnJogos, btnAcademico;
 
 // ── INICIALIZAÇÃO ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
+  // Captura elementos após o DOM estar pronto
+  elTelaInicial  = document.getElementById('tela-inicial');
+  elApp          = document.getElementById('app');
+  elSidebarNav   = document.getElementById('sidebar-nav');
+  elSidebarTag   = document.getElementById('sidebar-modo-tag');
+  elConteudoView = document.getElementById('conteudo-view');
+  btnVoltar      = document.getElementById('btn-voltar');
+  elRodape       = document.querySelector('.rodape-fixo');
+  btnJogos       = document.getElementById('btn-jogos');
+  btnAcademico   = document.getElementById('btn-academico');
+
   inicializarRouter(elConteudoView);
   _registrarRotas();
   _bindBotoesInicio();
@@ -368,3 +372,6 @@ function _mostrarErroModal(el, msg) {
 function _bindBotaoVoltar() {
   btnVoltar?.addEventListener('click', _voltarInicio);
 }
+
+
+
