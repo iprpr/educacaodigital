@@ -2006,3 +2006,163 @@ body {
 /* ══════════════════════════════════════════════════════════════════════════════
    FIM DO SISTEMA MOBILE
    ══════════════════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════════
+   MODAL DE LOGIN
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+#modal-login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s var(--transition);
+}
+
+#modal-login-overlay.ativo {
+  opacity: 1;
+}
+
+.modal-login {
+  background: var(--bg-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+  transform: translateY(24px);
+  transition: transform 0.3s var(--transition);
+}
+
+#modal-login-overlay.ativo .modal-login {
+  transform: translateY(0);
+}
+
+.modal-login__fechar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+}
+.modal-login__fechar:hover { color: var(--text); background: var(--bg-3); }
+
+.modal-login__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.modal-login__sigla {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--primary);
+  letter-spacing: 0.08em;
+}
+.modal-login__nome {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.modal-login__desc {
+  color: var(--text-2);
+  font-size: 0.9rem;
+  margin-bottom: 1.75rem;
+}
+
+.modal-login__campo {
+  margin-bottom: 1rem;
+}
+.modal-login__campo label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.04em;
+}
+.modal-login__campo input {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.modal-login__campo input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-dim);
+}
+.modal-login__campo input::placeholder { color: var(--text-3); }
+
+.modal-login__erro {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.modal-login__btn {
+  width: 100%;
+  background: var(--primary);
+  color: var(--text-inv);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  margin-top: 0.25rem;
+}
+.modal-login__btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+.modal-login__btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.modal-login__rodape {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+.modal-login__link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.modal-login__link:hover { text-decoration: underline; }
+
+/* Sidebar: itens de conta/logout */
+.sidebar__item--usuario {
+  cursor: default;
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+.sidebar__item--sair { color: var(--danger); }
+.sidebar__item--sair:hover { background: rgba(248,113,113,0.08); }
