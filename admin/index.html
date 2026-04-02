@@ -152,6 +152,8 @@
     .badge--professor{background:rgba(129,140,248,0.12);color:var(--accent);}
     .badge--admin{background:rgba(251,191,36,0.12);color:var(--warning);}
     .acoes{display:flex;gap:.4rem;}
+    .btn-resetar{background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
+    .btn-resetar:hover{background:rgba(99,102,241,.3);}
     .btn-acao{
       padding:.3rem .7rem;border-radius:var(--radius-sm);border:none;
       font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s;
@@ -416,6 +418,7 @@ function renderizarTabela(filtro) {
           ${u.status !== 'aprovado'  ? `<button class="btn-acao btn-aprovar"  data-id="${u.id}" data-nome="${u.nome}" data-action="aprovar">✓</button>` : ''}
           ${u.status !== 'reprovado' ? `<button class="btn-acao btn-reprovar" data-id="${u.id}" data-nome="${u.nome}" data-action="reprovar">✗</button>` : ''}
           ${u.status !== 'pendente'  ? `<button class="btn-acao btn-restaurar" data-id="${u.id}" data-nome="${u.nome}" data-action="pendente">↩</button>` : ''}
+          <button class="btn-acao btn-resetar" data-email="${u.email}" data-nome="${u.nome}" data-action="resetar" title="Enviar link de redefinição de senha">🔑</button>
         </div>
       </td>
     </tr>
@@ -430,6 +433,26 @@ function bindAcoes() {
       const id     = btn.dataset.id;
       const nome   = btn.dataset.nome;
       const action = btn.dataset.action;
+
+      if (action === 'resetar') {
+        const email = btn.dataset.email;
+        const nome  = btn.dataset.nome;
+        if (!confirm(`Enviar link de redefinição de senha para ${nome} (${email})?`)) return;
+        btn.disabled = true;
+        btn.textContent = '…';
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://educacaodigital.iprpr.dev.br'
+        });
+        if (error) {
+          alert('Erro ao enviar: ' + error.message);
+        } else {
+          salvarLog('reset', `Link de redefinição de senha enviado para ${nome}`);
+          alert(`✅ Link enviado para ${email}`);
+        }
+        btn.disabled = false;
+        btn.textContent = '🔑';
+        return;
+      }
 
       const novoStatus = action === 'aprovar' ? 'aprovado' : action === 'reprovar' ? 'reprovado' : 'pendente';
 
