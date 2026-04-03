@@ -17,7 +17,7 @@ import {
 export async function renderProfessores(container) {
   const { usuario } = getEstado();
   if (!usuario) { container.innerHTML = htmlErro('Você precisa estar logado.'); return; }
-  if (usuario.tipo !== 'professor' && usuario.tipo !== 'admin') {
+  if (!(usuario.tipo === 'professor' || usuario.isProfessor || usuario.tipo === 'admin')) {
     container.innerHTML = htmlErro('Acesso restrito a professores.');
     return;
   }
