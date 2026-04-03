@@ -140,6 +140,57 @@
     </div>
   </div>
 
+  <div class="campo" id="campo-turma">
+    <label>Turma</label>
+    <select id="turma">
+      <option value="">Selecione sua turma…</option>
+      <option value="EF1 - 2º Ano A">EF1 - 2º Ano A</option>
+      <option value="EF1 - 2º Ano B">EF1 - 2º Ano B</option>
+      <option value="EF1 - 2º Ano C">EF1 - 2º Ano C</option>
+      <option value="EF1 - 2º Ano D">EF1 - 2º Ano D</option>
+      <option value="EF1 - 3º Ano A">EF1 - 3º Ano A</option>
+      <option value="EF1 - 3º Ano B">EF1 - 3º Ano B</option>
+      <option value="EF1 - 3º Ano C">EF1 - 3º Ano C</option>
+      <option value="EF1 - 3º Ano D">EF1 - 3º Ano D</option>
+      <option value="EF1 - 4º Ano A">EF1 - 4º Ano A</option>
+      <option value="EF1 - 4º Ano B">EF1 - 4º Ano B</option>
+      <option value="EF1 - 4º Ano C">EF1 - 4º Ano C</option>
+      <option value="EF1 - 4º Ano D">EF1 - 4º Ano D</option>
+      <option value="EF1 - 5º Ano A">EF1 - 5º Ano A</option>
+      <option value="EF1 - 5º Ano B">EF1 - 5º Ano B</option>
+      <option value="EF1 - 5º Ano C">EF1 - 5º Ano C</option>
+      <option value="EF1 - 5º Ano D">EF1 - 5º Ano D</option>
+      <option value="EF2 - 6º Ano A">EF2 - 6º Ano A</option>
+      <option value="EF2 - 6º Ano B">EF2 - 6º Ano B</option>
+      <option value="EF2 - 6º Ano C">EF2 - 6º Ano C</option>
+      <option value="EF2 - 6º Ano D">EF2 - 6º Ano D</option>
+      <option value="EF2 - 7º Ano A">EF2 - 7º Ano A</option>
+      <option value="EF2 - 7º Ano B">EF2 - 7º Ano B</option>
+      <option value="EF2 - 7º Ano C">EF2 - 7º Ano C</option>
+      <option value="EF2 - 7º Ano D">EF2 - 7º Ano D</option>
+      <option value="EF2 - 8º Ano A">EF2 - 8º Ano A</option>
+      <option value="EF2 - 8º Ano B">EF2 - 8º Ano B</option>
+      <option value="EF2 - 8º Ano C">EF2 - 8º Ano C</option>
+      <option value="EF2 - 8º Ano D">EF2 - 8º Ano D</option>
+      <option value="EF2 - 9º Ano A">EF2 - 9º Ano A</option>
+      <option value="EF2 - 9º Ano B">EF2 - 9º Ano B</option>
+      <option value="EF2 - 9º Ano C">EF2 - 9º Ano C</option>
+      <option value="EF2 - 9º Ano D">EF2 - 9º Ano D</option>
+      <option value="EM - 1º Ano A">EM - 1º Ano A</option>
+      <option value="EM - 1º Ano B">EM - 1º Ano B</option>
+      <option value="EM - 1º Ano C">EM - 1º Ano C</option>
+      <option value="EM - 1º Ano D">EM - 1º Ano D</option>
+      <option value="EM - 2º Ano A">EM - 2º Ano A</option>
+      <option value="EM - 2º Ano B">EM - 2º Ano B</option>
+      <option value="EM - 2º Ano C">EM - 2º Ano C</option>
+      <option value="EM - 2º Ano D">EM - 2º Ano D</option>
+      <option value="EM - 3º Ano A">EM - 3º Ano A</option>
+      <option value="EM - 3º Ano B">EM - 3º Ano B</option>
+      <option value="EM - 3º Ano C">EM - 3º Ano C</option>
+      <option value="EM - 3º Ano D">EM - 3º Ano D</option>
+    </select>
+  </div>
+
   <button class="btn" id="btn">Criar conta</button>
   <div class="rodape">Já tem conta? <a href="/">Fazer login</a></div>
 </div>
@@ -151,6 +202,9 @@ document.querySelectorAll('.tipo-opcao').forEach(label => {
   label.addEventListener('click', () => {
     document.querySelectorAll('.tipo-opcao').forEach(l => l.classList.remove('selecionado'));
     label.classList.add('selecionado');
+    // Mostrar campo turma só para alunos
+    const tipo = label.querySelector('input').value;
+    document.getElementById('campo-turma').style.display = tipo === 'aluno' ? '' : 'none';
   });
 });
 
@@ -166,11 +220,13 @@ document.getElementById('btn').addEventListener('click', async () => {
   const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
   const tipo  = document.querySelector('input[name="tipo"]:checked').value;
+  const turma = document.getElementById('turma').value;
 
   document.getElementById('msg').classList.add('oculto');
 
   if (!nome || !email || !senha) return msg('erro', 'Preencha todos os campos.');
   if (senha.length < 6) return msg('erro', 'A senha precisa ter pelo menos 6 caracteres.');
+  if (tipo === 'aluno' && !turma) return msg('erro', 'Selecione sua turma.');
 
   const btn = document.getElementById('btn');
   btn.disabled = true;
@@ -187,7 +243,7 @@ document.getElementById('btn').addEventListener('click', async () => {
 
   const { error: erroInsert } = await supabase.from('usuarios').insert({
     id: data.user.id,
-    nome, email, tipo, status: 'pendente'
+    nome, email, tipo, turma: turma || null, status: 'pendente'
   });
 
   if (erroInsert) {
