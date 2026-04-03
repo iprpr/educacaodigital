@@ -435,17 +435,34 @@
       // Aluno escaneou QR
       await mostrarTelaAluno(sessionId);
 
-    } else if (modoProf === '1') {
-      // Professor abre o telão manualmente: /check-in?prof=1
-      // Limpa o parâmetro da URL
-      window.history.replaceState({}, '', '/check-in');
-      mostrarTela('tela-professor');
-      document.getElementById('input-data').value = dataHoje();
-      await gerarQRAutomatico();
-
     } else {
-      // Acesso direto sem parâmetros → redireciona para o site
-      window.location.replace('/');
+      // Sem parâmetros — verifica sessão do Supabase
+      const { data: sessao } = await _sb.auth.getSession();
+      const userId = sessao?.session?.user?.id;
+
+      if (!userId) {
+        // Não logado → redireciona para home
+        window.location.replace('/');
+        return;
+      }
+
+      // Busca perfil para saber o tipo
+      const { data: perfil } = await _sb
+        .from('usuarios')
+        .select('tipo, status')
+        .eq('id', userId)
+        .single();
+
+      if (perfil && (perfil.tipo === 'professor' || perfil.tipo === 'admin') && perfil.status === 'aprovado') {
+        // Professor ou admin → tela de gerar QR
+        window.history.replaceState({}, '', '/check-in');
+        mostrarTela('tela-professor');
+        document.getElementById('input-data').value = dataHoje();
+        await gerarQRAutomatico();
+      } else {
+        // Aluno logado acessando /check-in sem QR → orienta
+        mostrarErroGeral('Escaneie o QR Code', 'Peça ao seu professor para exibir o QR code e aponte a câmera para ele.');
+      }
     }
   })();
 </script>
