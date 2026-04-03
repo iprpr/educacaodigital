@@ -8,6 +8,7 @@ import {
   buscarConteudos, publicarConteudo, removerConteudo,
   filtrarPorProfessor, listarTurmas
 } from '../../modules/api.js';
+import { TURMAS } from '../../modules/turmas.js';
 import {
   htmlLoading, htmlVazio, htmlErro, htmlBadgeTipo, formatarData,
   htmlDetalheConteudo, inicializarSimulado
@@ -152,7 +153,7 @@ function _htmlForm(usuario) {
         </div>
         <div class="form-campo">
           <label>Turma *</label>
-          <input id="pub-turma" type="text" placeholder="Ex: 7º Ano A" />
+          <select id="pub-turma"><option value="">Selecione a turma…</option></select>
         </div>
         <div class="form-campo form-campo--full">
           <label>Descrição *</label>
@@ -191,6 +192,13 @@ function _htmlForm(usuario) {
 }
 
 function _bindForm(container, usuario) {
+  // Popular select de turmas
+  const selTurma = document.getElementById('pub-turma');
+  if (selTurma) {
+    selTurma.innerHTML = '<option value="">Selecione a turma…</option>' +
+      TURMAS.map(t => `<option value="${t}">${t}</option>`).join('');
+  }
+
   container.querySelectorAll('.tipo-select-op').forEach(op => {
     op.addEventListener('click', () => {
       container.querySelectorAll('.tipo-select-op').forEach(o => o.classList.remove('selecionado'));
